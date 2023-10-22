@@ -35,7 +35,13 @@ pyyaml
 
 ## Installation
 
-please see usage and testing below. Standby for docker container instructions in the near future.
+please see usage and testing below. Build your own docker image!  
+```bash
+# Clone this repo
+docker build -t troute -f docker/Dockerfile.troute
+# Use the helper script instead of python -m nwm_routing
+docker/troute.sh -V3 -f test/LowerColorado_TX/test_AnA.yaml
+```  
 
 ## Configuration
 
@@ -56,7 +62,7 @@ $ ./compiler.sh
 
 # execute a demonstration test
 $ cd test/LowerColorado_TX
-$ python3 -m nwm_routing -f test_AnA.yaml
+$ python3 -m nwm_routing -V3 -f test_AnA.yaml
 ```
 
 ## Known issues

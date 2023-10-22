@@ -1,0 +1,33 @@
+FROM rockylinux:9.2 as rocky-base
+RUN yum install -y epel-release 
+RUN yum install -y netcdf netcdf-fortran netcdf-fortran-devel netcdf-openmpi
+
+RUN yum install -y git cmake python python-devel pip 
+# RUN git clone https://github.com/NOAA-OWP/t-route.git
+RUN git clone https://github.com/joshcu/t-route/
+WORKDIR "/t-route/"
+RUN git reset --hard 15bd543
+# 15bd543 <-- after LowerColorado Test fix
+# 2a2f936 <-- no-e compile fix
+
+
+
+RUN ln -s /usr/lib64/gfortran/modules/netcdf.mod /usr/include/openmpi-x86_64/netcdf.mod
+
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+RUN python -m pip install -r requirements.txt
+# pin version number 3.0.3 deprecated something troute uses
+RUN python -m pip install cython==3.0.2 
+RUN ./compiler.sh no-e
+
+# add troute required modules
+RUN python -m pip install pyarrow deprecated geopandas
+
+# increase max open files soft limit
+RUN ulimit -n 10000
+ENTRYPOINT ["/opt/venv/bin/python", "-m", "nwm_routing"]
+RUN pwd
+
