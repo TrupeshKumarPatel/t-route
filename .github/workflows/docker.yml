@@ -1,10 +1,9 @@
 name: Build and Test Docker Image
 
 on:
-  push:
+  pull_request:
     branches:
-      - docker  # Adjust this to your branch
-
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
